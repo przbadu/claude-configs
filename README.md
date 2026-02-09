@@ -66,40 +66,26 @@ agent-browser install --with-deps
 
 ## Installation
 
-Claude Code discovers skills automatically from two locations:
-
-- **Personal** (all projects): `~/.claude/skills/<skill-name>/`
-- **Project** (single project): `.claude/skills/<skill-name>/`
-
-### Install all skills (personal)
-
-Symlink or copy the entire collection so every skill is available in all your projects:
+Claude Code discovers skills automatically from `~/.claude/skills/`.
 
 ```bash
-# Clone the repo
+# Clone the repo (if you haven't already)
 git clone <repo-url> ~/dev/skills
-
-# Symlink each skill into your personal skills directory
-mkdir -p ~/.claude/skills
-for skill in ~/dev/skills/*/; do
-  skill_name=$(basename "$skill")
-  [ -f "$skill/SKILL.md" ] && ln -sf "$skill" ~/.claude/skills/"$skill_name"
-done
 ```
 
-### Install a single skill (personal)
+### Install all skills
+
+Symlink the entire repo as your global skills directory so all skills are available across every project:
+
+```bash
+ln -s ~/dev/skills ~/.claude/skills
+```
+
+### Install a single skill
 
 ```bash
 mkdir -p ~/.claude/skills
-ln -sf ~/dev/skills/pdf ~/.claude/skills/pdf
-```
-
-### Install for a specific project
-
-```bash
-cd /path/to/your/project
-mkdir -p .claude/skills
-ln -sf ~/dev/skills/pdf .claude/skills/pdf
+ln -s ~/dev/skills/pdf ~/.claude/skills/pdf
 ```
 
 ### Verify installation
