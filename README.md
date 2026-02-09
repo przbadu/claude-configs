@@ -8,10 +8,12 @@ A collection of modular, specialized AI skills that extend Claude Code's capabil
 |-------|-------------|
 | **agent-browser** | Browser automation CLI for AI agents (navigate, fill forms, click, screenshot, scrape) |
 | **algorithmic-art** | Create generative algorithmic art using p5.js |
+| **commit** | Git commits from staged changes with confirmation |
 | **brand-guidelines** | Anthropic brand colors, typography, and styling |
 | **canvas-design** | Create visual art and designs in PNG and PDF |
 | **doc-coauthoring** | Structured workflow for collaborative documentation |
 | **docx** | Word document creation, editing, and analysis |
+| **git-worktree** | Manage git worktrees for parallel development (create, list, cleanup) |
 | **frontend-design** | Production-grade frontend interfaces with React/HTML/CSS |
 | **internal-comms** | Internal communication templates (updates, newsletters, FAQs) |
 | **mcp-builder** | Guide for building Model Context Protocol (MCP) servers |
@@ -63,6 +65,25 @@ agent-browser install
 ```bash
 agent-browser install --with-deps
 ```
+
+### git-worktree
+
+The **git-worktree** skill requires no extra installation — it uses git's built-in worktree support. Just make sure you have **git 2.5+** installed.
+
+**Usage examples in Claude Code:**
+
+```
+# Create a worktree for a new feature
+> create a worktree for feature/user-auth
+
+# List existing worktrees
+> show my worktrees
+
+# Clean up worktrees whose branches have been merged
+> clean up worktrees
+```
+
+Worktrees are created under `.worktrees/` in your repo root and automatically added to `.gitignore`.
 
 ## Installation
 
