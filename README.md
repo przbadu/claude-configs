@@ -7,18 +7,22 @@ A collection of modular, specialized AI skills and hooks that extend Claude Code
 | Skill | Description |
 |-------|-------------|
 | **agent-browser** | Browser automation CLI for AI agents (navigate, fill forms, click, screenshot, scrape) |
+| **airbrake-fixer** | Triage and fix production Airbrake errors via Chrome, create PRs automatically |
 | **algorithmic-art** | Create generative algorithmic art using p5.js |
-| **commit** | Git commits from staged changes with confirmation |
 | **brand-guidelines** | Anthropic brand colors, typography, and styling |
 | **canvas-design** | Create visual art and designs in PNG and PDF |
+| **commit** | Git commits from staged changes with confirmation |
 | **doc-coauthoring** | Structured workflow for collaborative documentation |
 | **docx** | Word document creation, editing, and analysis |
-| **git-worktree** | Manage git worktrees for parallel development (create, list, cleanup) |
 | **frontend-design** | Production-grade frontend interfaces with React/HTML/CSS |
+| **git-worktree** | Manage git worktrees for parallel development (create, list, cleanup) |
+| **github-pr** | Create or find GitHub pull requests and open in browser |
 | **internal-comms** | Internal communication templates (updates, newsletters, FAQs) |
 | **mcp-builder** | Guide for building Model Context Protocol (MCP) servers |
 | **pdf** | PDF processing: merge, split, extract, fill forms, OCR |
+| **perf-monitor** | Daily production performance monitoring, diagnosis, and auto-fix via Chrome (New Relic, Logtails, PGHero, Airbrake) |
 | **pptx** | PowerPoint presentation creation and editing |
+| **pr-review-fixer** | Review and fix GitHub PR code review comments |
 | **skill-creator** | Meta-skill for creating new skills |
 | **slack-gif-creator** | Create animated GIFs optimized for Slack |
 | **theme-factory** | Apply professional themes to artifacts |
@@ -65,6 +69,10 @@ agent-browser install
 ```bash
 agent-browser install --with-deps
 ```
+
+### perf-monitor
+
+The **perf-monitor** skill requires Chrome browser automation enabled (`--chrome` flag or chrome enabled in Claude Code settings). You must be logged into New Relic, Logtails, PGHero, and Airbrake in Chrome. On first run, it will ask for your dashboard URLs and store them in project memory for future use.
 
 ### git-worktree
 
