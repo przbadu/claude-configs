@@ -7,6 +7,7 @@ A collection of modular, specialized AI skills and hooks that extend Claude Code
 | Skill | Description |
 |-------|-------------|
 | **agent-browser** | Browser automation CLI for AI agents (navigate, fill forms, click, screenshot, scrape) |
+| **bug-crusher** | Triage, rank, and fix GitHub bug tickets by complexity and AI-fixability scoring |
 | **airbrake-fixer** | Triage and fix production Airbrake errors via Chrome, create PRs automatically |
 | **algorithmic-art** | Create generative algorithmic art using p5.js |
 | **brand-guidelines** | Anthropic brand colors, typography, and styling |
@@ -16,6 +17,7 @@ A collection of modular, specialized AI skills and hooks that extend Claude Code
 | **docx** | Word document creation, editing, and analysis |
 | **frontend-design** | Production-grade frontend interfaces with React/HTML/CSS |
 | **git-worktree** | Manage git worktrees for parallel development (create, list, cleanup) |
+| **github-autopilot** | End-to-end development autopilot: GitHub issue -> PRD -> tasks -> implementation -> PR |
 | **github-pr** | Create or find GitHub pull requests and open in browser |
 | **internal-comms** | Internal communication templates (updates, newsletters, FAQs) |
 | **mcp-builder** | Guide for building Model Context Protocol (MCP) servers |
@@ -69,6 +71,31 @@ agent-browser install
 ```bash
 agent-browser install --with-deps
 ```
+
+### bug-crusher
+
+The **bug-crusher** skill requires the `gh` CLI to be installed and authenticated. It fetches open issues labeled "Bug" from your GitHub repo, scores them for complexity and AI-fixability, and orchestrates fixes using git worktrees and PRs.
+
+```
+# Triage and rank all open bugs
+> crush bugs
+
+# Auto-fix mode: work through top-priority bugs
+> fix bugs in auto mode
+```
+
+On first run, it asks for your GitHub repo URL and target bug count, then stores config in project memory for future sessions.
+
+### github-autopilot
+
+The **github-autopilot** skill requires the `gh` CLI and [task-master](https://github.com/task-master-ai/task-master) to be installed. It takes a GitHub issue URL and autonomously generates a PRD, parses it into tasks, and implements them.
+
+```
+# Implement a GitHub issue end-to-end
+> autopilot https://github.com/org/repo/issues/123
+```
+
+It selects a standard or RPG-style PRD template based on issue complexity signals (labels, body length, acceptance criteria count). Task files are stored in `.taskmaster/`.
 
 ### perf-monitor
 

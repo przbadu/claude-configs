@@ -80,8 +80,8 @@ Office-format skills (docx, pptx, xlsx) share common utilities in their `scripts
 | **Office docs** | docx, pptx, xlsx, pdf |
 | **Visual/creative** | algorithmic-art, canvas-design, frontend-design, theme-factory, slack-gif-creator |
 | **Development** | agent-browser, mcp-builder, web-artifacts-builder, webapp-testing |
-| **Git workflow** | commit, git-worktree, github-pr |
-| **Production ops** | perf-monitor, airbrake-fixer, pr-review-fixer |
+| **Git workflow** | commit, git-worktree, github-pr, github-autopilot |
+| **Production ops** | perf-monitor, airbrake-fixer, pr-review-fixer, bug-crusher |
 | **Writing/process** | doc-coauthoring, internal-comms, skill-creator, brand-guidelines |
 
 ## Design Principles for Skills
