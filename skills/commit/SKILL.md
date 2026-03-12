@@ -116,6 +116,6 @@ To generate the best commit message, provide:
 ## Action
 
 use `!git` commit the staged changes. VERY IMPORTANT note, don't add unstaged changes, only commit the message. Example, you can only RUN: `git commit -m [your generated commit message]`, you should not run `git add` command, this is to prevent accidental commit of unwanted files to the git. Big security risk.
-Also ALWAYS print the message, and ALWAYS confirm with user before running `git commit` command because user might might be looking to only generate a message and don't want you to commit them yet.
+ALWAYS print the generated commit message before running the commit command.
 
 REFERENCE: ./skill-rules-fragment.json
