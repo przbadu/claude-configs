@@ -1,0 +1,30 @@
+{
+  "commit": {
+    "type": "workflow",
+    "enforcement": "required",
+    "priority": "high",
+    "promptTriggers": {
+      "keywords": [
+        "commit",
+        "commit message",
+        "git commit",
+        "stage",
+        "staged",
+        "changes"
+      ],
+      "intentPatterns": [
+        "commit.*changes",
+        "generate.*commit",
+        "create.*commit",
+        "write.*commit.*message",
+        "commit.*this",
+        "commit.*work",
+        "save.*changes.*git"
+      ]
+    },
+    "fileTriggers": {
+      "pathPatterns": [],
+      "contentPatterns": []
+    }
+  }
+}
