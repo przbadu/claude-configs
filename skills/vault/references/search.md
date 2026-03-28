@@ -1,19 +1,22 @@
 # Vault Search
 
-Search the vault at `/Users/przbadu/Documents/Obsidian`.
+Resolve vault path first:
+```bash
+VAULT=$(grep 'vault_path:' ~/.config/vault/config.yaml | awk '{print $2}')
+```
 
 ## Search Methods (priority order)
 
 ### 1. Ripgrep (fastest, default)
 ```bash
-rg -i "QUERY" /Users/przbadu/Documents/Obsidian --glob '*.md' --glob '!.obsidian/**' --glob '!_trash/**' -l
-rg -i "QUERY" /Users/przbadu/Documents/Obsidian --glob '*.md' --glob '!.obsidian/**' -C 3
-rg "tags:.*TAGNAME" /Users/przbadu/Documents/Obsidian --glob '*.md' -l
+rg -i "QUERY" $VAULT --glob '*.md' --glob '!.obsidian/**' --glob '!_trash/**' -l
+rg -i "QUERY" $VAULT --glob '*.md' --glob '!.obsidian/**' -C 3
+rg "tags:.*TAGNAME" $VAULT --glob '*.md' -l
 ```
 
 ### 2. Obsidian CLI (if available)
 ```bash
-obsidian search "QUERY" --vault /Users/przbadu/Documents/Obsidian 2>/dev/null
+obsidian search "QUERY" --vault $VAULT 2>/dev/null
 ```
 Fall back to ripgrep if unavailable.
 
@@ -39,7 +42,7 @@ Search by keyword/phrase. Return file paths, matching lines, sorted by match cou
 
 ### Forgotten Gems
 ```bash
-find /Users/przbadu/Documents/Obsidian -name '*.md' -not -path '*/.obsidian/*' -not -path '*/_trash/*' -mtime +180 -size +500c
+find $VAULT -name '*.md' -not -path '*/.obsidian/*' -not -path '*/_trash/*' -mtime +180 -size +500c
 ```
 Read sample of old notes, highlight actionable content. Suggest: revisit, archive, or link.
 

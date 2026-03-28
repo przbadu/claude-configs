@@ -1,6 +1,9 @@
 # Vault Organize
 
-Vault path: `/Users/przbadu/Documents/Obsidian`
+Resolve vault path first:
+```bash
+VAULT=$(grep 'vault_path:' ~/.config/vault/config.yaml | awk '{print $2}')
+```
 Git-commit before file moves/renames. Batch limit: 50 files per operation.
 
 ## Operations
@@ -11,7 +14,7 @@ Move misplaced files to correct folders based on content and category.
 2. Read frontmatter and content, determine correct folder
 3. Present move plan: `source → destination`, confirm, execute, update wikilinks, git-commit
 
-Root-level files: `find /Users/przbadu/Documents/Obsidian -maxdepth 1 -name '*.md' -not -name 'CLAUDE.md'`
+Root-level files: `find $VAULT -maxdepth 1 -name '*.md' -not -name 'CLAUDE.md'`
 
 ### 2. Rename Files
 Standardize to kebab-case. Convert spaces to hyphens, lowercase. Preserve date prefixes. Update all wikilinks. Confirm before batch rename.

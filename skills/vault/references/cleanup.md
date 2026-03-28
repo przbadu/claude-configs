@@ -1,11 +1,14 @@
 # Vault Cleanup
 
-Vault path: `/Users/przbadu/Documents/Obsidian`
+Resolve vault path first:
+```bash
+VAULT=$(grep 'vault_path:' ~/.config/vault/config.yaml | awk '{print $2}')
+```
 
 ## Safety Protocol (MANDATORY)
 
 Before ANY destructive operation:
-1. `cd /Users/przbadu/Documents/Obsidian && git add -A && git commit -m "vault: safety checkpoint before cleanup"`
+1. `cd $VAULT && git add -A && git commit -m "vault: safety checkpoint before cleanup"`
 2. Use `_trash/` for soft deletes (never hard-delete user content)
 3. Max 50 files per batch — show progress between batches
 
@@ -13,7 +16,7 @@ Before ANY destructive operation:
 
 ### 1. Empty Files
 ```bash
-find /Users/przbadu/Documents/Obsidian -name '*.md' -empty -not -path '*/.obsidian/*' -not -path '*/_trash/*'
+find $VAULT -name '*.md' -empty -not -path '*/.obsidian/*' -not -path '*/_trash/*'
 ```
 - 0-byte files → move to `_trash/`
 - Files with only whitespace → move to `_trash/`
@@ -21,7 +24,7 @@ find /Users/przbadu/Documents/Obsidian -name '*.md' -empty -not -path '*/.obsidi
 
 ### 2. Empty Directories
 ```bash
-find /Users/przbadu/Documents/Obsidian -type d -empty -not -path '*/.obsidian/*' -not -path '*/.git/*' -not -path '*/_trash/*'
+find $VAULT -type d -empty -not -path '*/.obsidian/*' -not -path '*/.git/*' -not -path '*/_trash/*'
 ```
 - Auto-delete empty directories (no confirmation needed)
 
@@ -40,7 +43,7 @@ Known duplicate pairs in `second-brain/`:
 
 ### 4. Orphaned Images
 ```bash
-find /Users/przbadu/Documents/Obsidian -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.gif' -o -name '*.svg' -o -name '*.webp' \) -not -path '*/.obsidian/*' -not -path '*/_trash/*' -not -path '*/_orphaned/*'
+find $VAULT -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.gif' -o -name '*.svg' -o -name '*.webp' \) -not -path '*/.obsidian/*' -not -path '*/_trash/*' -not -path '*/_orphaned/*'
 ```
 - Check each image against markdown references: `rg -l 'IMAGE_FILENAME' --glob '*.md'`
 - Unreferenced images → move to `_orphaned/`
@@ -48,7 +51,7 @@ find /Users/przbadu/Documents/Obsidian -type f \( -name '*.png' -o -name '*.jpg'
 
 ### 5. Broken Wikilinks
 ```bash
-rg -o '\[\[([^\]|]+)' /Users/przbadu/Documents/Obsidian --glob '*.md' --no-filename -r '$1' | sort -u
+rg -o '\[\[([^\]|]+)' $VAULT --glob '*.md' --no-filename -r '$1' | sort -u
 ```
 - For each link target, check if a matching .md file exists
 - Report broken links with source file and line number
@@ -56,7 +59,7 @@ rg -o '\[\[([^\]|]+)' /Users/przbadu/Documents/Obsidian --glob '*.md' --no-filen
 
 ### 6. Sync Conflicts
 ```bash
-find /Users/przbadu/Documents/Obsidian -name '*.sync-conflict-*' -not -path '*/_trash/*'
+find $VAULT -name '*.sync-conflict-*' -not -path '*/_trash/*'
 ```
 - For each conflict file, find the original
 - Show diff between conflict and original
@@ -88,6 +91,6 @@ Process user's selection in order. Git-commit after each category.
 
 ## Post-Cleanup
 
-1. `cd /Users/przbadu/Documents/Obsidian && git add -A && git commit -m "vault: cleanup — [summary]"`
+1. `cd $VAULT && git add -A && git commit -m "vault: cleanup — [summary]"`
 2. Show before/after file counts
 3. Suggest running `vault health` for a full report

@@ -1,57 +1,97 @@
 # Local AI Configuration
 
-## Supported Backends
+## Endpoints
 
-The vault-ai skill supports any OpenAI-compatible API running locally:
+All services run on Proxmox GPU server at `192.168.1.150`:
 
-### Ollama (default)
+| Service | Port | URL |
+|---------|------|-----|
+| **Chat/Completion** | 8080 | `http://192.168.1.150:8080/v1` |
+| **Embeddings** | 8082 | `http://192.168.1.150:8082/v1` |
+| **Re-ranking** | 8083 | `http://192.168.1.150:8083/v1` |
+
+## Environment Variables
+
+Set in `~/.zshrc`:
+
 ```bash
-# Check if running
-curl -s http://localhost:11434/api/tags
+# Chat/Completion
+export VAULT_AI_API_URL="http://192.168.1.150:8080/v1"
+export VAULT_AI_MODEL=""                                  # auto-detect from /v1/models
 
-# Embedding
-curl -s http://localhost:11434/api/embeddings -d '{"model": "qwen2.5-embed", "prompt": "text"}'
+# Embeddings (separate server)
+export VAULT_AI_EMBED_URL="http://192.168.1.150:8082/v1"
+export VAULT_AI_EMBED_MODEL=""                            # auto-detect from /v1/models
 
-# Chat completion
-curl -s http://localhost:11434/api/chat -d '{"model": "qwen2.5", "messages": [{"role": "user", "content": "text"}]}'
+# Re-ranking (separate server)
+export VAULT_AI_RERANK_URL="http://192.168.1.150:8083/v1"
+export VAULT_AI_RERANK_MODEL=""                           # auto-detect from /v1/models
 ```
 
-### vLLM / OpenAI-compatible server
+## SSH Tunnel Fallback
+
+If LAN is unreachable, tunnel all three ports:
 ```bash
-# Check if running
-curl -s http://localhost:8000/v1/models
-
-# Embedding
-curl -s http://localhost:8000/v1/embeddings -H "Content-Type: application/json" -d '{"model": "qwen2.5-embed", "input": "text"}'
-
-# Chat completion
-curl -s http://localhost:8000/v1/chat/completions -H "Content-Type: application/json" -d '{"model": "qwen2.5", "messages": [{"role": "user", "content": "text"}]}'
+ssh -N -L 8080:localhost:8080 -L 8082:localhost:8082 -L 8083:localhost:8083 user@192.168.1.150
 ```
+Then use `localhost` instead of `192.168.1.150`.
 
-## Model Recommendations
+## Resolving Endpoints
 
-| Task | Model | Why |
-|------|-------|-----|
-| Embedding | `qwen2.5-embed` or `bge-m3` | Fast, good quality |
-| Re-ranking | `bge-reranker-v2-m3` | Accurate relevance scoring |
-| Tagging/Categorization | `qwen2.5:7b` | Good enough, fast |
-| Summarization | `qwen2.5:14b+` or Claude | Better quality for longer text |
+```bash
+CHAT_URL="${VAULT_AI_API_URL:-http://192.168.1.150:8080/v1}"
+EMBED_URL="${VAULT_AI_EMBED_URL:-http://192.168.1.150:8082/v1}"
+RERANK_URL="${VAULT_AI_RERANK_URL:-http://192.168.1.150:8083/v1}"
+```
 
 ## Availability Check
 
-Before using local AI, always check availability:
 ```bash
-# Try Ollama first
-OLLAMA="000"
-# Then try vLLM/OpenAI-compatible
-VLLM="000"
+CHAT_OK=$(curl -s -o /dev/null -w "%{http_code}" "$CHAT_URL/models" 2>/dev/null)
+EMBED_OK=$(curl -s -o /dev/null -w "%{http_code}" "$EMBED_URL/models" 2>/dev/null)
+RERANK_OK=$(curl -s -o /dev/null -w "%{http_code}" "$RERANK_URL/models" 2>/dev/null)
 ```
 
-If neither responds with 200, fall back to using Claude in the current session.
+**Fallback:** If endpoint returns non-200, try `localhost` (SSH tunnel). If still fails, use Claude (current session) for chat tasks. Embedding/reranking tasks that fail silently degrade to keyword search via ripgrep.
 
-## Configuration
+## Auto-Detect Models
 
-Users can override defaults by setting environment variables:
-- `VAULT_AI_API_URL` — Base URL for OpenAI-compatible API (default: http://localhost:11434)
-- `VAULT_AI_MODEL` — Model name for chat (default: qwen2.5)
-- `VAULT_AI_EMBED_MODEL` — Model name for embeddings (default: qwen2.5-embed)
+```bash
+curl -s "$CHAT_URL/models" | jq -r '.data[].id'
+curl -s "$EMBED_URL/models" | jq -r '.data[].id'
+curl -s "$RERANK_URL/models" | jq -r '.data[].id'
+```
+
+## API Usage
+
+### Chat Completion
+```bash
+curl -s "$CHAT_URL/chat/completions" \
+  -H "Content-Type: application/json" \
+  -d "{\"model\": \"$VAULT_AI_MODEL\", \"messages\": [{\"role\": \"user\", \"content\": \"text\"}]}"
+```
+
+### Embeddings
+```bash
+curl -s "$EMBED_URL/embeddings" \
+  -H "Content-Type: application/json" \
+  -d "{\"model\": \"$VAULT_AI_EMBED_MODEL\", \"input\": \"text to embed\"}"
+```
+
+### Re-ranking
+```bash
+curl -s "$RERANK_URL/rerank" \
+  -H "Content-Type: application/json" \
+  -d "{\"model\": \"$VAULT_AI_RERANK_MODEL\", \"query\": \"search query\", \"documents\": [\"doc1\", \"doc2\"]}"
+```
+
+## Task-to-Endpoint Mapping
+
+| Task | Endpoint | Fallback |
+|------|----------|----------|
+| Tagging/Categorization | Chat (:8080) | Claude |
+| Summarization | Chat (:8080) | Claude |
+| Chat with vault | Chat (:8080) | Claude |
+| Semantic search | Embed (:8082) | ripgrep keyword search |
+| Duplicate detection | Embed (:8082) | title/content comparison |
+| Search result ranking | Rerank (:8083) | match-count sorting |

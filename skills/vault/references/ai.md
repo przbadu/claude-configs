@@ -1,6 +1,9 @@
 # AI-Powered Vault Operations
 
-Vault path: `/Users/przbadu/Documents/Obsidian`
+Resolve vault path first:
+```bash
+VAULT=$(grep 'vault_path:' ~/.config/vault/config.yaml | awk '{print $2}')
+```
 
 ## Local AI Configuration
 See [local-ai-config.md](local-ai-config.md) for setup. Prefer local models. Fall back to Claude if unavailable.
@@ -11,7 +14,7 @@ Check: `curl -s -o /dev/null -w "%{http_code}" http://localhost:11434/api/tags 2
 ### 1. Auto-Tag
 Analyze content, suggest tags from existing vault tags. Ask before new tags.
 ```bash
-rg -o 'tags: \[.*?\]' /Users/przbadu/Documents/Obsidian --glob '*.md' --no-filename | tr ',' '\n' | sed 's/.*\[//;s/\]//;s/^ *//' | sort -u
+rg -o 'tags: \[.*?\]' $VAULT --glob '*.md' --no-filename | tr ',' '\n' | sed 's/.*\[//;s/\]//;s/^ *//' | sort -u
 ```
 Batch: up to 50 untagged notes, show table for bulk approval.
 

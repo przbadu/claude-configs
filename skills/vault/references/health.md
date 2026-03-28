@@ -1,6 +1,9 @@
 # Vault Health Report
 
-Generate comprehensive health reports for the vault at `/Users/przbadu/Documents/Obsidian`.
+Resolve vault path first:
+```bash
+VAULT=$(grep 'vault_path:' ~/.config/vault/config.yaml | awk '{print $2}')
+```
 
 ## Report Generation
 
@@ -8,7 +11,6 @@ Run these scans in parallel where possible:
 
 ### 1. File Statistics
 ```bash
-VAULT="/Users/przbadu/Documents/Obsidian"
 echo "Markdown files:" && find "$VAULT" -name '*.md' -not -path '*/.obsidian/*' -not -path '*/_trash/*' | wc -l
 echo "Images:" && find "$VAULT" -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.gif' -o -name '*.svg' \) -not -path '*/.obsidian/*' | wc -l
 echo "PDFs:" && find "$VAULT" -name '*.pdf' -not -path '*/.obsidian/*' | wc -l
@@ -17,7 +19,7 @@ echo "Vault size:" && du -sh "$VAULT" --exclude='.git' 2>/dev/null || du -sh "$V
 
 ### 2. Frontmatter Audit
 ```bash
-rg -L '^---' /Users/przbadu/Documents/Obsidian --glob '*.md' --glob '!.obsidian/**' --glob '!_trash/**'
+rg -L '^---' $VAULT --glob '*.md' --glob '!.obsidian/**' --glob '!_trash/**'
 ```
 - Count files missing frontmatter and required fields
 - Top 10 most-used tags, tag distribution by category
@@ -34,7 +36,7 @@ rg -L '^---' /Users/przbadu/Documents/Obsidian --glob '*.md' --glob '!.obsidian/
 
 ### 6. Plugin Audit (monthly)
 ```bash
-ls /Users/przbadu/Documents/Obsidian/.obsidian/plugins/
+ls $VAULT/.obsidian/plugins/
 ```
 - List plugins, check for empty dirs (broken installs), flag missing `main.js`, ask about removal
 

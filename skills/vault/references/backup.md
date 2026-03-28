@@ -1,12 +1,15 @@
 # Vault Backup
 
-Git-based backup for the vault at `/Users/przbadu/Documents/Obsidian`.
+Resolve vault path first:
+```bash
+VAULT=$(grep 'vault_path:' ~/.config/vault/config.yaml | awk '{print $2}')
+```
 
 ## Operations
 
 ### Quick Backup (default)
 ```bash
-cd /Users/przbadu/Documents/Obsidian
+cd "$VAULT"
 git add -A && git status --short && git commit -m "vault: backup $(date +%Y-%m-%d_%H:%M)"
 ```
 If remote configured: `git push origin main`
@@ -14,13 +17,13 @@ If remote configured: `git push origin main`
 ### Safety Checkpoint
 Called by other vault operations before destructive actions:
 ```bash
-cd /Users/przbadu/Documents/Obsidian
+cd "$VAULT"
 git add -A && git commit -m "vault: safety checkpoint before [operation-name]" --allow-empty
 ```
 
 ### Status Check
 ```bash
-cd /Users/przbadu/Documents/Obsidian
+cd "$VAULT"
 echo "=== Uncommitted Changes ===" && git status --short
 echo "=== Last 5 Commits ===" && git log --oneline -5
 echo "=== Last Backup ===" && git log -1 --format='%cr'

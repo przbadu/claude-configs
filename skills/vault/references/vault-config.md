@@ -2,10 +2,17 @@
 
 ## Paths
 
-- **Vault root**: `/Users/przbadu/Documents/Obsidian`
-- **Trash folder**: `_trash/` (inside vault root)
-- **Orphaned images**: `_orphaned/` (inside vault root)
-- **Inbox**: `_inbox/` (for notes needing review/categorization)
+Read vault path from config: `cat ~/.config/vault/config.yaml | grep vault_path`
+
+- **Vault root**: Read `vault_path` from `~/.config/vault/config.yaml` (never hardcode)
+- **Trash folder**: `$VAULT/_trash/`
+- **Orphaned images**: `$VAULT/_orphaned/`
+- **Inbox**: `$VAULT/_inbox/`
+
+Use `VAULT` as the variable name when constructing paths in commands:
+```bash
+VAULT=$(grep 'vault_path:' ~/.config/vault/config.yaml | awk '{print $2}')
+```
 
 ## Folder Structure
 

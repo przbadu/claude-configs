@@ -1,6 +1,8 @@
 # Quick Vault Capture
 
-Capture notes into the Obsidian vault at `/Users/przbadu/Documents/Obsidian` from any working directory.
+**Read vault path first:** `VAULT=$(grep 'vault_path:' ~/.config/vault/config.yaml | awk '{print $2}')`
+
+Capture notes into the Obsidian vault (`$VAULT`) from any working directory.
 
 ## Workflow
 
@@ -48,11 +50,11 @@ Infer note type from keywords and context:
 
 Always include required fields. Set `created` and `modified` to today. Infer tags from title and content (max 5). Ask before adding any NEW tag not already used in the vault.
 
-To check existing tags: `rg -o 'tags: \[.*?\]' /Users/przbadu/Documents/Obsidian --glob '*.md' --no-filename | sort -u`
+To check existing tags: `rg -o 'tags: \[.*?\]' $VAULT --glob '*.md' --no-filename | sort -u`
 
 ## Wikilink Suggestions
 
 After creating the note, scan for potential wikilinks:
-1. Get existing note titles: `find /Users/przbadu/Documents/Obsidian -name '*.md' -not -path '*/.obsidian/*' -not -path '*/_trash/*' | xargs -I{} basename {} .md`
+1. Get existing note titles: `find $VAULT -name '*.md' -not -path '*/.obsidian/*' -not -path '*/_trash/*' | xargs -I{} basename {} .md`
 2. Check if any title appears in new note's content
 3. Present matches, ask user which to convert to `[[wikilinks]]`
