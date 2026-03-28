@@ -34,6 +34,7 @@ A collection of modular, specialized AI skills and hooks that extend Claude Code
 | **skill-creator** | Meta-skill for creating new skills |
 | **slack-gif-creator** | Create animated GIFs optimized for Slack |
 | **theme-factory** | Apply professional themes to artifacts |
+| **vault** | Obsidian vault management suite: capture, cleanup, health, search, organize, AI-analyze, and backup |
 | **web-artifacts-builder** | Build complex claude.ai HTML artifacts with React/Tailwind |
 | **webapp-testing** | Playwright-based web app testing toolkit |
 | **xlsx** | Excel/spreadsheet creation, analysis, and editing |
